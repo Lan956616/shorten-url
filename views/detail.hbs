@@ -1,5 +1,13 @@
 <div class="detail-container">
   <h3>縮址成功！請使用以下網址</h3>
-  <a href={{shortenURL}}>{{shortenURL}}</a>
+  <a href={{shortenURL}} id="new_url">{{shortenURL}}</a>
   <button onclick="copy()">複製網址</button>
 </div>
+
+<script>
+  function copy() {  
+      const URL = document.querySelector('#new_url').innerText
+      navigator.clipboard.writeText(URL)
+      alert('已成功複製網址')
+    }
+</script>
