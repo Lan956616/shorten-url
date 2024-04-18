@@ -31,11 +31,20 @@ app.get('/shorten', (req,res)=>{
   }
 })
 
+app.get('/:id', (req,res)=>{
+  const id = req.params.id
+  const index = Object.keys(usedURL).indexOf(id)
+  res.redirect(`${Object.values(usedURL)[index]}`)
+})
+
 
 //監聽伺服器
 app.listen(port, ()=>{
   console.log(`express server is running on http://localhost:${port}`)
 })
+
+
+
 
 //隨機產生亂數功能
 function getFiveRandom(inputURL) {
@@ -43,7 +52,7 @@ function getFiveRandom(inputURL) {
   const index = Object.values(usedURL).indexOf(inputURL)
   //已經縮短過
   if (index >= 0) {
-    return Objects.keys(usedURL)[index]
+    return Object.keys(usedURL)[index]
   }
   //還沒被縮短過
   let result = ''
@@ -53,6 +62,11 @@ function getFiveRandom(inputURL) {
   }
   //產生的新短網址紀錄進file system
   usedURL[result] = inputURL
-  fs.writeFile('./public/jsons/usedURL.json', JSON.stringify(usedURL))
+  fs.writeFile('./public/jsons/usedURL.json', JSON.stringify(usedURL), function (err) {
+    if (err)
+        console.log(err);
+    else
+        console.log('Write operation complete.');
+})
   return result
 }
