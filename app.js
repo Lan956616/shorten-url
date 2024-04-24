@@ -21,7 +21,20 @@ app.get('/', (req,res)=>{
 })
 
 app.get('/shorten', (req,res)=>{
-  const inputURL = req.query.URL
+
+//↓↓↓↓↓↓↓↓↓↓第二次繳交新增↓↓↓↓↓↓↓↓↓↓
+
+//把輸入網址去除空白和轉成小寫
+  let inputURL = req.query.URL.trim().toLowerCase()
+
+//如果輸入的網址最後一字為'/'則去掉
+  if (inputURL[inputURL.length - 1] === '/') {
+    inputURL = inputURL.slice(0, inputURL.length - 1)
+  }
+
+//↑↑↑↑↑↑↑第二次繳交新增↑↑↑↑↑↑↑
+
+
   let shortenURL = ``
   //沒有輸入內容就不執行
   if (inputURL.length > 0) {
@@ -44,7 +57,8 @@ app.listen(port, ()=>{
 })
 
 
-
+//↓↓↓↓↓↓↓↓↓↓第二次繳交新增↓↓↓↓↓↓↓↓↓↓
+//把函式分成兩個 並增加檢查產生的五個亂數有沒有重複
 
 //隨機產生亂數功能
 function getFiveRandom(inputURL) {
@@ -54,12 +68,10 @@ function getFiveRandom(inputURL) {
   if (index >= 0) {
     return Object.keys(usedURL)[index]
   }
-  //還沒被縮短過
+  //還沒被縮短過則呼叫函式
   let result = ''
-  const data = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  for (let i = 1; i <=5; i++) {
-    result += data[Math.floor(Math.random() * 62)]
-  }
+  result += numbers()
+
   //產生的新短網址紀錄進file system
   usedURL[result] = inputURL
   fs.writeFile('./public/jsons/usedURL.json', JSON.stringify(usedURL), function (err) {
@@ -70,3 +82,21 @@ function getFiveRandom(inputURL) {
 })
   return result
 }
+
+
+function numbers() {
+  let result = ''
+  const data = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  //隨機產生五碼
+  for (let i = 1; i <= 5; i++) {
+    result += data[Math.floor(Math.random() * 62)]
+  }
+  //檢查產生的五碼有沒有重複過
+  if (Object.keys(usedURL).indexOf(result) >= 0) {
+    return numbers()
+  } else {
+    return result
+  }
+}
+
+//↑↑↑↑↑↑↑第二次繳交新增↑↑↑↑↑↑↑
